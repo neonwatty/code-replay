@@ -19,7 +19,7 @@ let keystrokes = loadKeystrokes();
 function recorder(event) {
   // unpack data
   const timestamp = new Date().toISOString();
-  const keyDescription = event.key;
+  let keyDescription = event.key;
   if (
     keyDescription === "Shift" ||
     keyDescription === "Alt" ||
@@ -37,11 +37,14 @@ function recorder(event) {
 
   // FOR TESTING - load in full keystroke history from local storage and print all //
   let all_keystrokes = loadKeystrokes();
-  console.log(`all keystrokes --> ${all_keystrokes}`);
 }
 
 // Event listener for keydown events
 function startRecorder() {
+  // create start symbol
+  const timestamp = new Date().toISOString();
+  addKeystroke(keystrokes, "a", timestamp);
+
   // start recorder
   inputArea.addEventListener("keydown", (event) => {
     recorder(event);
@@ -71,6 +74,10 @@ stopButton.addEventListener("click", () => {
 
   // stop keydown event listener
   inputArea.removeEventListener("keydown", recorder);
+
+  // create stop symbol
+  const timestamp = new Date().toISOString();
+  addKeystroke(keystrokes, "a", timestamp);
 });
 
 // clear recording

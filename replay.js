@@ -16,12 +16,33 @@ let replayTimeout;
 let startTime;
 
 function updateOutput(key) {
-  console.log(`key printed --> ${key}`);
-  outputArea.innerHTML += key;
+  if (currentIndex > 0 && currentIndex < keystrokes.length - 1) {
+    switch (key) {
+      case "Enter":
+        outputArea.innerHTML += "<br>"; // New line for Enter key
+        break;
+      case " ":
+        outputArea.innerHTML += "&nbsp;"; // Add a space for the space key
+        break;
+      case "Tab":
+        outputArea.innerHTML += "&emsp;"; // Optional: Add a tab space
+        break;
+      case "Backspace":
+        // Remove the last character (including any newline or space)
+        outputArea.innerHTML = outputArea.innerHTML.slice(0, -1);
+        break;
+      default:
+        outputArea.innerHTML += key; // Append the key normally
+        break;
+    }
+  }
 }
 
 function replayKeystrokes() {
-  if (currentIndex >= keystrokes.length) return; // Stop if all keystrokes have been processed
+  if (currentIndex >= keystrokes.length) {
+    timer.stop();
+    return;
+  }
 
   const keystroke = keystrokes[currentIndex];
   const keyTime = keystroke.timestamp;
@@ -58,8 +79,6 @@ function startReplay() {
     startTime = keystrokes[0].timestamp;
     replay_counter += 1;
   }
-
-  console.log(`replay_counter --> ${replay_counter}`);
 
   // start keystrokes
   replayKeystrokes();
