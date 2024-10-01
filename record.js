@@ -1,43 +1,19 @@
+import { addKeystroke, clearKeystrokes, loadKeystrokes } from "./local.js";
+import Timer from "./timer.js";
 const inputArea = document.getElementById("inputArea");
 const outputArea = document.getElementById("outputArea");
 const logArea = document.getElementById("log");
 const startButton = document.getElementById("record-start");
 const stopButton = document.getElementById("record-stop");
 const clearButton = document.getElementById("record-clear");
-const timer = document.getElementById("timer");
+const recordTimer = document.getElementById("record-timer");
+const timer = new Timer(recordTimer);
 
-// timer
-let counter = 0;
-let interval;
-
-function stopTimer() {
-  clearInterval(interval);
-}
-
-function convertSec(cnt) {
-  let sec = cnt % 60;
-  let min = Math.floor(cnt / 60);
-  if (sec < 10) {
-    if (min < 10) {
-      return "0" + min + ":0" + sec;
-    } else {
-      return min + ":0" + sec;
-    }
-  } else if (min < 10 && sec >= 10) {
-    return "0" + min + ":" + sec;
-  } else {
-    return min + ":" + sec;
-  }
-}
-
-function startTimer() {
-  interval = setInterval(function () {
-    timer.innerHTML = convertSec(counter++); // timer start counting here...
-  }, 1000);
-}
+// clear out keystroke storage
+clearKeystrokes();
 
 // Array to store keystrokes
-let keystrokes = [];
+let keystrokes = loadKeystrokes();
 
 // recorder function
 function recorder(event) {
@@ -53,14 +29,15 @@ function recorder(event) {
     return; // Skip recording
   }
 
-  // package key data
-  const keyData = { keyDescription, timestamp };
-
   // Log the keystroke
-  keystrokes.push(keyData);
+  addKeystroke(keystrokes, keyDescription, timestamp);
 
   // Update the log display
   logArea.innerHTML = `<p>Key: ${keyDescription}, Time: ${timestamp}</p>`;
+
+  // FOR TESTING - load in full keystroke history from local storage and print all //
+  let all_keystrokes = loadKeystrokes();
+  console.log(`all keystrokes --> ${all_keystrokes}`);
 }
 
 // Event listener for keydown events
@@ -81,7 +58,7 @@ startButton.addEventListener("click", () => {
   keystrokes = [];
 
   // start timer
-  startTimer();
+  timer.start();
 
   // start recorder
   startRecorder();
@@ -90,7 +67,7 @@ startButton.addEventListener("click", () => {
 // stop recording
 stopButton.addEventListener("click", () => {
   // stop timer
-  stopTimer();
+  timer.stop();
 
   // stop keydown event listener
   inputArea.removeEventListener("keydown", recorder);
@@ -99,13 +76,14 @@ stopButton.addEventListener("click", () => {
 // clear recording
 clearButton.addEventListener("click", () => {
   // clear out keystrokes
-  keystrokes = [];
+  keystrokes = clearKeystrokes();
 
-  // clear out input html
+  // clear out input and output
   inputArea.value = "";
+  outputArea.innerHTML = "";
 
-  // reset timer
-  timer.innerHTML = "00:00";
+  // clear timer
+  timer.clear();
 });
 
 export { keystrokes };
