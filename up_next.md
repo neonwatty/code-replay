@@ -1,0 +1,2 @@
+- input size detection to avoid recording non-growth keys
+- code formatting
