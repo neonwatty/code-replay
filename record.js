@@ -12,7 +12,8 @@ inputArea.addEventListener("keydown", (event) => {
   if (
     keyDescription === "Shift" ||
     keyDescription === "Alt" ||
-    keyDescription === "Control"
+    keyDescription === "Control" ||
+    keyDescription === "Meta"
   ) {
     return; // Skip recording
   }
