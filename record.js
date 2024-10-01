@@ -8,6 +8,8 @@ const stopButton = document.getElementById("record-stop");
 const clearButton = document.getElementById("record-clear");
 const recordTimer = document.getElementById("record-timer");
 const timer = new Timer(recordTimer);
+let prevInputLength = 1; // 1 added for pre-start symbol
+let curInputLength = 0;
 
 // clear out keystroke storage
 clearKeystrokes();
@@ -15,28 +17,34 @@ clearKeystrokes();
 // Array to store keystrokes
 let keystrokes = loadKeystrokes();
 
+// function to keep current input value length up to date
+function updateInputLength(e) {
+  curInputLength = e.target.value.length + 1;
+}
+
 // recorder function
 function recorder(event) {
-  // unpack data
-  const timestamp = new Date().toISOString();
-  let keyDescription = event.key;
-  if (
-    keyDescription === "Shift" ||
-    keyDescription === "Alt" ||
-    keyDescription === "Control" ||
-    keyDescription === "Meta"
-  ) {
-    return; // Skip recording
+  // check if keypress has changed input area value length
+  if (curInputLength != prevInputLength) {
+    // unpack data
+    const timestamp = new Date().toISOString();
+    let keyDescription = event.key;
+    if (
+      keyDescription === "Shift" ||
+      keyDescription === "Alt" ||
+      keyDescription === "Control" ||
+      keyDescription === "Meta"
+    ) {
+      return; // Skip recording
+    }
+
+    // Log the keystroke
+    addKeystroke(keystrokes, keyDescription, timestamp);
+
+    // Update the log display
+    logArea.innerHTML = `<p>Key: ${keyDescription}, Time: ${timestamp}</p>`;
   }
-
-  // Log the keystroke
-  addKeystroke(keystrokes, keyDescription, timestamp);
-
-  // Update the log display
-  logArea.innerHTML = `<p>Key: ${keyDescription}, Time: ${timestamp}</p>`;
-
-  // FOR TESTING - load in full keystroke history from local storage and print all //
-  let all_keystrokes = loadKeystrokes();
+  prevInputLength = curInputLength;
 }
 
 // Event listener for keydown events
@@ -48,6 +56,10 @@ function startRecorder() {
   // start recorder
   inputArea.addEventListener("keydown", (event) => {
     recorder(event);
+  });
+
+  inputArea.addEventListener("input", (event) => {
+    updateInputLength(event);
   });
 }
 
@@ -72,8 +84,9 @@ stopButton.addEventListener("click", () => {
   // stop timer
   timer.stop();
 
-  // stop keydown event listener
+  // stop keydown and input event listener
   inputArea.removeEventListener("keydown", recorder);
+  inputArea.removeEventListener("input", updateInputLength);
 
   // create stop symbol
   const timestamp = new Date().toISOString();

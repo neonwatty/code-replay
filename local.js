@@ -9,7 +9,6 @@ function saveKeystrokes(keystrokes) {
 // Function to load keystrokes from Local Storage
 function loadKeystrokes() {
   const storedKeystrokes = localStorage.getItem(STORAGE_KEY);
-  console.log(`storedKeystrokes --> ${storedKeystrokes}`);
 
   if (storedKeystrokes == null || storedKeystrokes === "undefined") {
     return [];
