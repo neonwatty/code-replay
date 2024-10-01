@@ -81,6 +81,7 @@ clearButton.addEventListener("click", () => {
   // clear out input and output
   inputArea.value = "";
   outputArea.innerHTML = "";
+  logArea.innerHTML = "";
 
   // clear timer
   timer.clear();

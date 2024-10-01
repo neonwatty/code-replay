@@ -9,72 +9,64 @@ const stopBtn = document.getElementById("replay-stop");
 const outputArea = document.getElementById("outputArea");
 
 let replay_counter = 0;
-let replay_keystrokes = [];
-let replayInterval;
+let keystrokes = [];
+let currentIndex = 0;
+let isPaused = false;
+let replayTimeout;
+let startTime;
 
-function replayKeystrokes(keystrokes) {
-  console.log(`REPLAY - replay_keystrokes --> ${keystrokes}`);
-
-  // prevent multiple intervals
-  if (replayInterval) return;
-
-  // Clear the textarea before replaying
-  outputArea.innerHTML = "";
-  let startTime = keystrokes[0].timestamp;
-  let key_to_print;
-
-  console.log(`startTime --> ${startTime}`);
-
-  keystrokes.forEach((keystroke, index) => {
-    // clear the previous interval
-    clearInterval(replayInterval);
-
-    // unpack keystroke timestamp and reconstruct keystroke delay
-    const keyTime = keystroke.timestamp;
-    const delay = new Date(keyTime) - new Date(startTime);
-
-    console.log(`delay --> ${delay}`);
-    console.log(`key to print --> ${keystroke.key}`);
-
-    key_to_print = keystroke.key;
-
-    // simulate keystorke with delay
-    setTimeout(() => {
-      console.log(`key printed --> ${key_to_print}`);
-
-      outputArea.innerHTML += keystroke.key;
-    }, delay);
-
-    // pop off first keystroke
-    keystrokes = keystrokes.slice(1);
-
-    // keystrokes after slice
-    console.log(`keystrokes after slice --> ${keystrokes}`);
-  });
+function updateOutput(key) {
+  console.log(`key printed --> ${key}`);
+  outputArea.innerHTML += key;
 }
 
-function stopReplay() {
-  // stop timer and clear interval
+function replayKeystrokes() {
+  if (currentIndex >= keystrokes.length) return; // Stop if all keystrokes have been processed
+
+  const keystroke = keystrokes[currentIndex];
+  const keyTime = keystroke.timestamp;
+  const delay = new Date(keyTime) - new Date(startTime);
+
+  replayTimeout = setTimeout(() => {
+    if (!isPaused) {
+      // Check if it's paused
+      updateOutput(keystroke.key);
+      currentIndex++; // Move to the next keystroke
+      startTime = keyTime;
+      replayKeystrokes(); // Call the function recursively to schedule the next keystroke
+    } else {
+      // If paused, just wait and check again
+      replayKeystrokes(); // Re-schedule the current index to check when to proceed
+    }
+  }, delay);
+}
+
+// Function to pause the replay
+function pauseReplay() {
+  isPaused = true;
+  clearTimeout(replayTimeout); // Clear the timeout
   timer.stop();
-  clearInterval(replayInterval);
-  replayInterval = null;
 }
 
 function startReplay() {
+  // set pause to false
+  isPaused = false;
+
   // only load keystrokes on first click of play btn
   if (replay_counter === 0) {
-    replay_keystrokes = loadKeystrokes();
+    keystrokes = loadKeystrokes();
+    startTime = keystrokes[0].timestamp;
     replay_counter += 1;
   }
 
   console.log(`replay_counter --> ${replay_counter}`);
 
   // start keystrokes
-  replayKeystrokes(replay_keystrokes);
+  replayKeystrokes();
 
   // start timer
   timer.start();
 }
 
 startBtn.addEventListener("click", startReplay);
-stopBtn.addEventListener("click", stopReplay);
+stopBtn.addEventListener("click", pauseReplay);
