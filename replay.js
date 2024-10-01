@@ -9,7 +9,6 @@ function replayKeystrokes(keystrokes) {
   let startTime = keystrokes[0].timestamp;
 
   keystrokes.forEach((keystroke, index) => {
-    console.log(keystroke.keyDescription);
     const keyTime = keystroke.timestamp;
     const delay = new Date(keyTime) - new Date(startTime);
 
