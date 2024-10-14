@@ -1,3 +1,4 @@
+import { outputEditor } from "./codemirror.js";
 import { loadKeystrokes } from "./local.js";
 import Timer from "./timer.js";
 
@@ -6,7 +7,6 @@ const timer = new Timer(replayTimer);
 
 const startBtn = document.getElementById("replay-start");
 const stopBtn = document.getElementById("replay-stop");
-const outputArea = document.getElementById("outputArea");
 
 let replay_counter = 0;
 let keystrokes = [];
@@ -16,23 +16,47 @@ let replayTimeout;
 let startTime;
 
 function updateOutput(key) {
-  if (currentIndex > 0 && currentIndex < keystrokes.length - 1) {
+  if (currentIndex >= 0 && currentIndex < keystrokes.length) {
     switch (key) {
       case "Enter":
-        outputArea.innerHTML += "<br>"; // New line for Enter key
+        outputEditor.replaceRange("\n\t", outputEditor.getCursor()); // Add a new line
         break;
+
       case " ":
-        outputArea.innerHTML += "&nbsp;"; // Add a space for the space key
+        outputEditor.replaceRange(" ", outputEditor.getCursor()); // Add a space
         break;
+
       case "Tab":
-        outputArea.innerHTML += "&emsp;"; // Optional: Add a tab space
+        outputEditor.replaceRange("\t", outputEditor.getCursor()); // Add a tab
         break;
+
       case "Backspace":
-        // Remove the last character (including any newline or space)
-        outputArea.innerHTML = outputArea.innerHTML.slice(0, -1);
+        const cursor = outputEditor.getCursor();
+        const currentLine = outputEditor.getLine(cursor.line);
+        if (cursor.ch > 0) {
+          outputEditor.replaceRange(
+            "",
+            { line: cursor.line, ch: cursor.ch - 1 },
+            cursor
+          ); // Remove last character
+        } else if (cursor.line > 0) {
+          const previousLineLength = outputEditor.getLine(
+            cursor.line - 1
+          ).length;
+          outputEditor.setCursor({
+            line: cursor.line - 1,
+            ch: previousLineLength,
+          }); // Move cursor up to the end of previous line
+          outputEditor.replaceRange(
+            "",
+            { line: cursor.line - 1, ch: previousLineLength - 1 },
+            cursor
+          ); // Remove last character of previous line
+        }
         break;
       default:
-        outputArea.innerHTML += key; // Append the key normally
+        console.log(key);
+        outputEditor.replaceRange(key, outputEditor.getCursor()); // Append the key normally
         break;
     }
   }

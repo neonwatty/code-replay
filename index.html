@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keystroke Logger</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -69,10 +76,10 @@
           <h2 class="text-xl border border-slate-600 dark:border-indigo-300">
             Replay area
           </h2>
-          <div
+          <textarea
             class="w-full h-32 dark:bg-slate-800 border border-slate-600 dark:border-indigo-300"
             id="outputArea"
-          ></div>
+          ></textarea>
           <div
             class="flex flex-col md:flex-row items-center mx-auto md:w-1/2 p-3 md:justify-center"
           >
@@ -99,7 +106,8 @@
         </div>
       </div>
     </div>
-    <script type="module" src="record.js"></script>
-    <script type="module" src="replay.js"></script>
+    <script type="module" src="js/record.js"></script>
+    <script type="module" src="js/replay.js"></script>
+    <script type="module" src="js/codemirror.js"></script>
   </body>
 </html>
