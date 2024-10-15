@@ -1,6 +1,6 @@
 import { inputEditor, outputEditor } from "./codemirror.js";
 import { addKeystroke, clearKeystrokes, loadKeystrokes } from "./local.js";
-import Timer from "./timer.js";
+import Timer from "./record-timer.js";
 const logArea = document.getElementById("log");
 const startButton = document.getElementById("record-start");
 const stopButton = document.getElementById("record-stop");

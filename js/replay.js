@@ -1,11 +1,12 @@
 import { outputEditor } from "./codemirror.js";
 import { loadKeystrokes } from "./local.js";
 import { playDuration, startRecordTime } from "./record.js";
+import { updateVisual } from "./replay-timer-visual.js";
+import Timer from "./replay-timer.js";
 import { scannerTimestamp, setScanner } from "./scanner.js";
-import Timer from "./timer.js";
 
 const replayTimer = document.getElementById("replay-timer");
-const timer = new Timer(replayTimer);
+const timer = new Timer();
 
 const startBtn = document.getElementById("replay-start");
 const stopBtn = document.getElementById("replay-stop");
@@ -19,6 +20,7 @@ let startTime;
 
 function playKeyPress(key, currentIndex) {
   if (currentIndex >= 0) {
+    // update keypress
     switch (key) {
       case "Enter":
         outputEditor.replaceRange("\n\t", outputEditor.getCursor()); // Add a new line
@@ -77,6 +79,12 @@ function replayKeystrokes() {
   // update scanner position
   setScanner(keystroke);
 
+  // update timer
+  updateVisual(
+    replayTimer,
+    Math.ceil((new Date(keystroke.timestamp).getTime() - startRecordTime) / 100)
+  );
+
   replayTimeout = setTimeout(() => {
     if (!isPaused) {
       // Check if it's paused
@@ -107,8 +115,9 @@ function pauseReplay() {
 }
 
 function startReplay() {
-  // set pause to false
+  // reset flags
   isPaused = false;
+  currentIndex = 0;
 
   // only load keystrokes on first click of play btn
   if (replay_counter === 0) {
@@ -124,7 +133,6 @@ function startReplay() {
       // Return true if the timestamp is less than the threshold
       return timestamp >= scannerTimestamp;
     });
-
     startTime = keystrokes[0].timestamp;
     replay_counter += 1;
   }

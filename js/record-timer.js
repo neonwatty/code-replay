@@ -34,10 +34,6 @@ class Timer {
       seconds < 10 ? "0" : ""
     }${seconds}.${milliseconds}`;
   }
-
-  getCurrentTime() {
-    return this.counter % 10;
-  }
 }
 
 export default Timer;
