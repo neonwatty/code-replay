@@ -1,6 +1,7 @@
 import { outputEditor } from "./codemirror.js";
 import { loadKeystrokes } from "./local.js";
-import { setScanner } from "./scanner.js";
+import { playDuration, startRecordTime } from "./record.js";
+import { scannerTimestamp, setScanner } from "./scanner.js";
 import Timer from "./timer.js";
 
 const replayTimer = document.getElementById("replay-timer");
@@ -100,15 +101,34 @@ function pauseReplay() {
 
   // stop timer
   timer.stop();
+
+  // reset play counter
+  replay_counter = 0;
 }
 
 function startReplay() {
+  console.log(
+    `here we go --> ${scannerTimestamp}, ${playDuration}, ${replay_counter}`
+  );
   // set pause to false
   isPaused = false;
 
   // only load keystrokes on first click of play btn
   if (replay_counter === 0) {
+    // load keystrokes from memory
     keystrokes = loadKeystrokes();
+
+    // show all keystrokes up to widthNormalizedNewX
+    keystrokes = keystrokes.filter((keystroke) => {
+      // Convert timestamp to float
+      const timestamp =
+        new Date(keystroke.timestamp).getTime() - startRecordTime;
+
+      // Return true if the timestamp is less than the threshold
+      return timestamp >= scannerTimestamp;
+    });
+    console.log(`current keystrokes --> ${keystrokes}`);
+
     startTime = keystrokes[0].timestamp;
     replay_counter += 1;
   }

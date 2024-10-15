@@ -21,7 +21,7 @@ const scannerBar = document.getElementById("scanner-bar");
 // scanner variables
 let scannerWidth = 0;
 let scannerPosition = 0;
-let scannerTimestamp;
+let scannerTimestamp = 0;
 
 function setScanner(keystroke) {
   if (recordingComplete) {
