@@ -5,7 +5,6 @@ let inputEditor;
 let outputEditor;
 
 window.addEventListener("load", function () {
-  console.log("codemirror loaded");
   inputEditor = CodeMirror.fromTextArea(document.getElementById("inputArea"), {
     lineNumbers: true,
     mode: "python",
