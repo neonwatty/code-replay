@@ -21,28 +21,25 @@ const scannerBar = document.getElementById("scanner-bar");
 // scanner variables
 let scannerWidth = 0;
 let scannerPosition = 0;
+let scannerTimestamp;
 
 function setScanner(keystroke) {
   if (recordingComplete) {
-    // get time diff between keystroke and record start
-    scannerPosition = new Date(keystroke.timestamp).getTime() - startRecordTime;
-    console.log(scannerPosition, playDuration);
-    if (scannerPosition / playDuration > 1) {
-      scannerPosition = playDuration;
-    } else if (scannerPosition < 0) {
-      scannerPosition = 0;
-    }
+    // create scanner timestamp
+    scannerTimestamp =
+      new Date(keystroke.timestamp).getTime() - startRecordTime;
+
+    // convert timestamp to position
+    scannerPosition = normalizeScannerPosition(
+      scannerTimestampToPosition(scannerTimestamp)
+    );
 
     // update actual time of scanner
-    saveScannerPointer("start_slider_video", scannerPosition);
-    scannerPointer.style.left = scannerPosition + "px";
+    saveScannerPointer("scanner_pointer_position", scannerPosition);
+    saveScannerPointer("scanner_pointer_timestamp", scannerTimestamp);
 
-    // update visual scanner
-    const scannerNormalizedNewX =
-      inverseScannerWidthDurationMapper(scannerPosition);
-    console.log(`scannerNormalizedNewX -> ${scannerNormalizedNewX}`);
-    saveScannerPointer("start_slider_actual", scannerNormalizedNewX);
-    scannerPointer.style.left = Math.ceil(scannerNormalizedNewX) + "px";
+    // update visual position
+    scannerPointer.style.left = scannerPosition + "px";
   }
 }
 
@@ -51,29 +48,40 @@ window.addEventListener("load", () => {
   // get bounding x values from scanner box
   const widthEndOffset = 12;
   scannerWidth = scannerBar.offsetWidth - widthEndOffset;
-  console.log();
 });
 
 startButton.removeEventListener("click", () => {
-  stopButton.removeEventListener("click", setScannerPointer);
+  stopButton.removeEventListener("click", () => {
+    // add hash marks based on key presses to bar
+
+    // setup slider
+    setScannerPointer();
+  });
 });
 stopButton.addEventListener("click", setScannerPointer);
 
 // mappers
-// map playDuration to scanner box width
-function inverseScannerWidthDurationMapper(t) {
+function scannerTimestampToPosition(t) {
   const normalizedVal = (t / playDuration) * scannerWidth;
   return normalizedVal;
 }
 
-// map scanner box width to playDuration
-function scannerWidthDurationMapper(t) {
+function scannerPositionToTimestamp(t) {
   const normalizedVal = (t / scannerWidth) * playDuration;
   return normalizedVal;
 }
 
+function normalizeScannerPosition(p) {
+  // map scannerTimestamp to scannerPosition
+  if (p / scannerWidth > 1) {
+    p = scannerWidth;
+  } else if (p < 0) {
+    p = 0;
+  }
+  return p;
+}
+
 function setScannerPointer() {
-  console.log("setting scanner pointer");
   if (recordingComplete) {
     let pos1 = 0,
       pos2 = 0,
@@ -104,22 +112,19 @@ function setScannerPointer() {
       pos4 = e.clientY;
 
       // Set the element's new position:
-      let newX = scannerPointer.offsetLeft - pos1;
-      if (newX / scannerWidth > 1) {
-        newX = scannerWidth;
-      } else if (newX < 0) {
-        newX = 0;
-      }
+      scannerPosition = normalizeScannerPosition(
+        scannerPointer.offsetLeft - pos1
+      );
 
       // update slider visually
-      scannerPointer.style.left = newX + "px";
+      scannerPointer.style.left = scannerPosition + "px";
 
       // save slider actual (visual on element) value
-      saveScannerPointer("scanner_pointer_normalized", newX);
+      saveScannerPointer("scanner_pointer_position", scannerPosition);
 
       // convert to record time and save
-      scannerPosition = scannerWidthDurationMapper(newX);
-      saveScannerPointer("scanner_pointer_actual", scannerPosition);
+      scannerTimestamp = scannerPositionToTimestamp(scannerPosition);
+      saveScannerPointer("scanner_pointer_timestamp", scannerTimestamp);
 
       // show all keystrokes up to widthNormalizedNewX
       const currentKeystrokes = keystrokes.filter((keystroke) => {
@@ -128,7 +133,7 @@ function setScannerPointer() {
           new Date(keystroke.timestamp).getTime() - startRecordTime;
 
         // Return true if the timestamp is less than the threshold
-        return timestamp < scannerPosition;
+        return timestamp < scannerTimestamp;
       });
 
       // reset output editor
@@ -148,4 +153,4 @@ function setScannerPointer() {
   }
 }
 
-export { setScanner };
+export { scannerPosition, scannerTimestamp, setScanner };

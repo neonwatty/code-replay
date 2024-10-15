@@ -18,7 +18,6 @@ let startTime;
 
 function playKeyPress(key, currentIndex) {
   if (currentIndex >= 0) {
-    console.log(key);
     switch (key) {
       case "Enter":
         outputEditor.replaceRange("\n\t", outputEditor.getCursor()); // Add a new line

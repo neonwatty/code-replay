@@ -99,15 +99,8 @@ stopButton.addEventListener("click", () => {
   recordingComplete = true;
 
   // update playDuration
-  let timestamp1, timestamp2;
   if (keystrokes.length > 0) {
-    const firstKeyStroke = keystrokes[0];
-    const lastKeyStroke = keystrokes[keystrokes.length - 1];
-
-    timestamp1 = new Date(firstKeyStroke.timestamp).getTime();
-    timestamp2 = new Date(lastKeyStroke.timestamp).getTime();
-
-    playDuration = timestamp2 - timestamp1;
+    playDuration = stopRecordTime - startRecordTime;
   }
 });
 
