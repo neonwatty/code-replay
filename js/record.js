@@ -92,21 +92,23 @@ stopButton.addEventListener("click", () => {
   recordingComplete = true;
 
   // create stop symbol
-  const timestamp = new Date().toISOString();
-  addKeystroke(keystrokes, "a", timestamp);
+  // const timestamp = new Date().toISOString();
+  // addKeystroke(keystrokes, "a", timestamp);
 
   // update recordingComplete flag
   recordingComplete = true;
 
   // update playDuration
-  const firstKeyStroke = keystrokes[0];
-  const lastKeyStroke = keystrokes[keystrokes.length - 1];
+  let timestamp1, timestamp2;
+  if (keystrokes.length > 0) {
+    const firstKeyStroke = keystrokes[0];
+    const lastKeyStroke = keystrokes[keystrokes.length - 1];
 
-  const timestamp1 = new Date(firstKeyStroke.timestamp).getTime();
-  const timestamp2 = new Date(lastKeyStroke.timestamp).getTime();
+    timestamp1 = new Date(firstKeyStroke.timestamp).getTime();
+    timestamp2 = new Date(lastKeyStroke.timestamp).getTime();
 
-  // Calculate the difference in milliseconds
-  playDuration = timestamp2 - timestamp1;
+    playDuration = timestamp2 - timestamp1;
+  }
 });
 
 // clear recording

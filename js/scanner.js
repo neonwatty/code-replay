@@ -22,6 +22,30 @@ const scannerBar = document.getElementById("scanner-bar");
 let scannerWidth = 0;
 let scannerPosition = 0;
 
+function setScanner(keystroke) {
+  if (recordingComplete) {
+    // get time diff between keystroke and record start
+    scannerPosition = new Date(keystroke.timestamp).getTime() - startRecordTime;
+    console.log(scannerPosition, playDuration);
+    if (scannerPosition / playDuration > 1) {
+      scannerPosition = playDuration;
+    } else if (scannerPosition < 0) {
+      scannerPosition = 0;
+    }
+
+    // update actual time of scanner
+    saveScannerPointer("start_slider_video", scannerPosition);
+    scannerPointer.style.left = scannerPosition + "px";
+
+    // update visual scanner
+    const scannerNormalizedNewX =
+      inverseScannerWidthDurationMapper(scannerPosition);
+    console.log(`scannerNormalizedNewX -> ${scannerNormalizedNewX}`);
+    saveScannerPointer("start_slider_actual", scannerNormalizedNewX);
+    scannerPointer.style.left = Math.ceil(scannerNormalizedNewX) + "px";
+  }
+}
+
 // set actual scanner width after page load
 window.addEventListener("load", () => {
   // get bounding x values from scanner box
@@ -46,24 +70,6 @@ function inverseScannerWidthDurationMapper(t) {
 function scannerWidthDurationMapper(t) {
   const normalizedVal = (t / scannerWidth) * playDuration;
   return normalizedVal;
-}
-
-// stopped here
-// visual scanner update
-function setScannerFromPlay(t) {
-  if (recordingComplete) {
-    // set scannerPosition based on current time
-    scannerPosition = inverseScannerWidthDurationMapper(t);
-
-    // update actual time of scanner
-    saveScannerPointer("start_slider_video", scannerPosition);
-
-    // update visual scanner
-    const scannerNormalizedNewX =
-      inverseScannerWidthDurationMapper(scannerPosition);
-    saveScannerPointer("start_slider_actual", scannerNormalizedNewX);
-    scannerPointer.style.left = Math.ceil(scannerNormalizedNewX) + "px";
-  }
 }
 
 function setScannerPointer() {
@@ -142,4 +148,4 @@ function setScannerPointer() {
   }
 }
 
-export { setScannerFromPlay };
+export { setScanner };

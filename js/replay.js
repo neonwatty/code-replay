@@ -1,6 +1,6 @@
 import { outputEditor } from "./codemirror.js";
 import { loadKeystrokes } from "./local.js";
-import { setScannerFromPlay } from "./scanner.js";
+import { setScanner } from "./scanner.js";
 import Timer from "./timer.js";
 
 const replayTimer = document.getElementById("replay-timer");
@@ -65,13 +65,17 @@ function playKeyPress(key, currentIndex) {
 
 function replayKeystrokes() {
   if (currentIndex >= keystrokes.length) {
-    timer.stop();
+    // stop all
+    pauseReplay();
     return;
   }
 
   const keystroke = keystrokes[currentIndex];
   const keyTime = keystroke.timestamp;
   const delay = new Date(keyTime) - new Date(startTime);
+
+  // update scanner position
+  setScanner(keystroke);
 
   replayTimeout = setTimeout(() => {
     if (!isPaused) {
@@ -89,8 +93,13 @@ function replayKeystrokes() {
 
 // Function to pause the replay
 function pauseReplay() {
+  // set pause flag
   isPaused = true;
+
+  // clear replay timeout
   clearTimeout(replayTimeout); // Clear the timeout
+
+  // stop timer
   timer.stop();
 }
 

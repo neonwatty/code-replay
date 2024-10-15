@@ -10,7 +10,7 @@ class Timer {
     if (this.interval) return; // Prevent multiple intervals
     this.interval = setInterval(() => {
       this.timerElement.innerHTML = this.convertSec(this.counter++);
-    }, 1000);
+    }, 100);
   }
 
   // Stop the timer
@@ -22,14 +22,21 @@ class Timer {
   // Clear the timer display
   clear() {
     this.counter = 0; // Reset counter
-    this.timerElement.innerHTML = "00:00";
+    this.timerElement.innerHTML = "00:00.00";
   }
 
-  // Convert seconds to MM:SS format
   convertSec(cnt) {
-    let sec = cnt % 60;
-    let min = Math.floor(cnt / 60);
-    return `${min < 10 ? "0" : ""}${min}:${sec < 10 ? "0" : ""}${sec}`;
+    const milliseconds = cnt % 10; // Get the last digit for milliseconds
+    const seconds = Math.floor(cnt / 10) % 60; // Get seconds
+    const minutes = Math.floor(cnt / 600); // Get total minutes
+
+    return `${minutes < 10 ? "0" : ""}${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}.${milliseconds}`;
+  }
+
+  getCurrentTime() {
+    return this.counter % 10;
   }
 }
 
