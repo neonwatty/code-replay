@@ -1,4 +1,11 @@
-import { playDuration, recordingComplete } from "./record.js";
+import { outputEditor } from "./codemirror.js";
+import {
+  keystrokes,
+  playDuration,
+  recordingComplete,
+  startRecordTime,
+} from "./record.js";
+import { playKeyPress } from "./replay.js";
 import { saveScannerPointer } from "./storage.js";
 
 // record buttons
@@ -14,17 +21,17 @@ const scannerBar = document.getElementById("scanner-bar");
 let scannerWidth = 0;
 let scannerPosition = 0;
 
-// set scanner width
-function setScannerWidth() {
+// set actual scanner width after page load
+window.addEventListener("load", () => {
   // get bounding x values from scanner box
   const widthEndOffset = 12;
-  scannerWidth = replayScanner.offsetWidth - widthEndOffset;
-}
+  scannerWidth = scannerBar.offsetWidth - widthEndOffset;
+  console.log();
+});
+
 startButton.removeEventListener("click", () => {
-  stopButton.removeEventListener("click", setScannerWidth);
   stopButton.removeEventListener("click", setScannerPointer);
 });
-stopButton.addEventListener("click", setScannerWidth);
 stopButton.addEventListener("click", setScannerPointer);
 
 // mappers
@@ -54,13 +61,13 @@ function setScannerFromPlay() {
 }
 
 function setScannerPointer() {
+  console.log("setting scanner pointer");
+
   let pos1 = 0,
     pos2 = 0,
     pos3 = 0,
     pos4 = 0;
-
   scannerPointer.onmousedown = dragMouseDown;
-
   function dragMouseDown(e) {
     e = e || window.e;
     e.preventDefault();
@@ -99,11 +106,26 @@ function setScannerPointer() {
     saveScannerPointer("scanner_pointer_normalized", newX);
 
     // convert to record time and save
-    const widthNormalizedNewX = scannerWidthDurationMapper(newX);
-    saveScannerPointer("scanner_pointer_actual", widthNormalizedNewX);
+    const scannerPosition = scannerWidthDurationMapper(newX);
+    saveScannerPointer("scanner_pointer_actual", scannerPosition);
 
-    // set pointer position
-    scannerPosition = widthNormalizedNewX;
+    // show all keystrokes up to widthNormalizedNewX
+    const currentKeystrokes = keystrokes.filter((keystroke) => {
+      // Convert timestamp to float
+      const timestamp =
+        new Date(keystroke.timestamp).getTime() - startRecordTime;
+
+      // Return true if the timestamp is less than the threshold
+      return timestamp < scannerPosition;
+    });
+
+    // reset output editor
+    outputEditor.setValue("");
+
+    // display keys
+    currentKeystrokes.forEach((element, index) => {
+      playKeyPress(element.key, index);
+    });
   }
 
   function closeDragElement() {

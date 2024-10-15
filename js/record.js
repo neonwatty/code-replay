@@ -8,6 +8,7 @@ const clearButton = document.getElementById("record-clear");
 const recordTimer = document.getElementById("record-timer");
 const timer = new Timer(recordTimer);
 let playDuration;
+let startRecordTime;
 let recordingComplete = false;
 
 // clear out keystroke storage
@@ -71,6 +72,9 @@ startButton.addEventListener("click", () => {
   // start timer
   timer.start();
 
+  // record start time
+  startRecordTime = Date.now();
+
   // start recorder
   startRecorder();
 });
@@ -112,4 +116,4 @@ clearButton.addEventListener("click", () => {
   timer.clear();
 });
 
-export { keystrokes, playDuration, recordingComplete };
+export { keystrokes, playDuration, recordingComplete, startRecordTime };

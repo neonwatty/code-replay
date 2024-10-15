@@ -15,8 +15,11 @@ let isPaused = false;
 let replayTimeout;
 let startTime;
 
-function updateOutput(key) {
-  if (currentIndex >= 0 && currentIndex < keystrokes.length) {
+function playKeyPress(key, currentIndex) {
+  console.log("a", currentIndex);
+  if (currentIndex >= 0) {
+    console.log("b");
+    console.log(key);
     switch (key) {
       case "Enter":
         outputEditor.replaceRange("\n\t", outputEditor.getCursor()); // Add a new line
@@ -55,7 +58,6 @@ function updateOutput(key) {
         }
         break;
       default:
-        console.log(key);
         outputEditor.replaceRange(key, outputEditor.getCursor()); // Append the key normally
         break;
     }
@@ -75,7 +77,7 @@ function replayKeystrokes() {
   replayTimeout = setTimeout(() => {
     if (!isPaused) {
       // Check if it's paused
-      updateOutput(keystroke.key);
+      playKeyPress(keystroke.key, currentIndex);
       currentIndex++; // Move to the next keystroke
       startTime = keyTime;
       replayKeystrokes(); // Call the function recursively to schedule the next keystroke
@@ -113,3 +115,5 @@ function startReplay() {
 
 startBtn.addEventListener("click", startReplay);
 stopBtn.addEventListener("click", pauseReplay);
+
+export { playKeyPress };
