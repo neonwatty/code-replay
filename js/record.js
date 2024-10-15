@@ -43,7 +43,7 @@ function recorder(event) {
   addKeystroke(keystrokes, keyDescription, timestamp);
 
   // Update the log display
-  logArea.innerHTML = `<p>Key: ${keyDescription}, Time: ${timestamp}</p>`;
+  // logArea.innerHTML = `<p>Key: ${keyDescription}, Time: ${timestamp}</p>`;
 }
 
 // Event listener for keydown events
