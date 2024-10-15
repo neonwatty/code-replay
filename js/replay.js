@@ -1,5 +1,6 @@
 import { outputEditor } from "./codemirror.js";
 import { loadKeystrokes } from "./local.js";
+import { setScannerFromPlay } from "./scanner.js";
 import Timer from "./timer.js";
 
 const replayTimer = document.getElementById("replay-timer");
@@ -16,9 +17,7 @@ let replayTimeout;
 let startTime;
 
 function playKeyPress(key, currentIndex) {
-  console.log("a", currentIndex);
   if (currentIndex >= 0) {
-    console.log("b");
     console.log(key);
     switch (key) {
       case "Enter":
