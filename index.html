@@ -1,32 +1,36 @@
 <!DOCTYPE html>
-<html lang="en" , class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Keystroke Logger</title>
+    <link rel="stylesheet" href="styles/output.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/python/python.min.js"></script>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-      };
-    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/monokai.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css"
+    />
   </head>
   <body class="dark:bg-slate-800 text-slate-900 dark:text-white">
-    <div class="w-screen h-4/5">
+    <div class="w-4/5 h-4/5 mx-auto">
       <div
         class="flex flex-col md:flex-row items-center md:items-start space-y-14 md:space-y-0 mt-10 mb-10 md:mt-20 justify-center mx-auto md:space-x-20"
       >
         <div
-          class="flex flex-col h-1/4 w-1/2 gap-4 border border-slate-600 dark:border-indigo-300"
+          class="flex flex-col h-1/4 w-1/2 rounded-xl gap-4 border border-slate-600 dark:border-indigo-300"
         >
-          <h2 class="text-xl border border-slate-600 dark:border-indigo-300">
+          <h2
+            class="text-xl px-4 border border-b-1 border-l-0 border-r-0 border-t-0 border-slate-600 dark:border-indigo-300"
+          >
             Record area
           </h2>
           <textarea
@@ -58,7 +62,7 @@
               clear
             </button>
             <div
-              class="border border-slate-600 dark:border-indigo-300 px-4"
+              class="border border-slate-600 dark:border-indigo-300 px-4 mb-4"
               id="timer-display-id"
             >
               <h1>Time</h1>
@@ -71,9 +75,11 @@
           </div>
         </div>
         <div
-          class="flex flex-col h-1/4 w-1/2 gap-4 border border-slate-600 dark:border-indigo-300"
+          class="flex flex-col h-1/4 w-1/2 rounded-xl gap-4 border border-slate-600 dark:border-indigo-300"
         >
-          <h2 class="text-xl border border-slate-600 dark:border-indigo-300">
+          <h2
+            class="text-xl px-4 border border-b-1 border-l-0 border-r-0 border-t-0 border-slate-600 dark:border-indigo-300"
+          >
             Replay area
           </h2>
           <textarea

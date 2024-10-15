@@ -1,11 +1,15 @@
+import { isDarkMode } from "./theme-check.js";
+const codeTheme = isDarkMode ? "dracula" : "default";
+
 let inputEditor;
 let outputEditor;
 
-document.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("load", function () {
+  console.log("codemirror loaded");
   inputEditor = CodeMirror.fromTextArea(document.getElementById("inputArea"), {
     lineNumbers: true,
     mode: "python",
-    theme: "default",
+    theme: codeTheme,
     matchBrackets: true,
     indentUnit: 4,
     tabSize: 4,
@@ -16,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     {
       lineNumbers: true,
       mode: "python",
-      theme: "default",
+      theme: codeTheme,
       matchBrackets: true,
       indentUnit: 4,
       tabSize: 4,

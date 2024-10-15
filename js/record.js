@@ -7,8 +7,6 @@ const stopButton = document.getElementById("record-stop");
 const clearButton = document.getElementById("record-clear");
 const recordTimer = document.getElementById("record-timer");
 const timer = new Timer(recordTimer);
-let prevInputLength = 1; // 1 added for pre-start symbol
-let curInputLength = 0;
 
 // clear out keystroke storage
 clearKeystrokes();
