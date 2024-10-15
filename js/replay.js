@@ -107,9 +107,6 @@ function pauseReplay() {
 }
 
 function startReplay() {
-  console.log(
-    `here we go --> ${scannerTimestamp}, ${playDuration}, ${replay_counter}`
-  );
   // set pause to false
   isPaused = false;
 
@@ -127,7 +124,6 @@ function startReplay() {
       // Return true if the timestamp is less than the threshold
       return timestamp >= scannerTimestamp;
     });
-    console.log(`current keystrokes --> ${keystrokes}`);
 
     startTime = keystrokes[0].timestamp;
     replay_counter += 1;
