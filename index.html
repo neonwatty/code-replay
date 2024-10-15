@@ -94,27 +94,44 @@
             class="w-full h-32 dark:bg-slate-800 border border-slate-600 dark:border-indigo-300"
             id="outputArea"
           ></textarea>
-          <div
-            class="flex flex-col md:flex-row items-center mx-auto md:w-1/2 p-3 md:justify-center"
-          >
-            <button
-              class="text-lg mb-4 md:mr-4 px-5 py-0.5 rounded-lg btn bg-green-700 border border-green-700 hover hover:bg-green-500 active:bg-green-500"
-              id="replay-start"
-            >
-              ▶
-            </button>
-            <button
-              class="text-xs mb-4 md:mr-4 px-5 py-2 rounded-lg btn bg-red-700 border border-red-700 hover hover:bg-red-500 active:bg-red-500"
-              id="replay-stop"
-            >
-              ▐▐
-            </button>
+          <div class="flex flex-col items-center justify-center">
             <div
-              class="border border-slate-600 dark:border-indigo-300 px-4 mb-4"
-              id="timer-display-id"
+              class="relative h-1/4 w-1/2 right-3 bottom-0 pt-8"
+              id="replay-scanner"
             >
-              <h1>Time</h1>
-              <p id="replay-timer">00:00</p>
+              <div
+                class="absolute bottom-4 h-1 w-full bg-cyan-500 opacity-75"
+                id="scanner-bar"
+              ></div>
+              <div class="absolute bottom-3 left-0" id="trim-start-drag">
+                <div
+                  class="tranistion ease-in-out w-3 h-3 rounded-lg bg-red-500 hover hover:scale-150 hover:bg-indigo-500 duration-300"
+                  id="trim-start"
+                ></div>
+              </div>
+            </div>
+            <div
+              class="flex flex-col md:flex-row items-center justify-center mx-auto md:w-1/2 p-3 md:justify-center"
+            >
+              <button
+                class="text-lg mb-4 md:mr-4 px-5 py-0.5 rounded-lg btn bg-green-700 border border-green-700 hover hover:bg-green-500 active:bg-green-500"
+                id="replay-start"
+              >
+                ▶
+              </button>
+              <button
+                class="text-xs mb-4 md:mr-4 px-5 py-2 rounded-lg btn bg-red-700 border border-red-700 hover hover:bg-red-500 active:bg-red-500"
+                id="replay-stop"
+              >
+                ▐▐
+              </button>
+              <div
+                class="border border-slate-600 dark:border-indigo-300 px-4 mb-4"
+                id="timer-display-id"
+              >
+                <h1>Time</h1>
+                <p id="replay-timer">00:00</p>
+              </div>
             </div>
           </div>
         </div>

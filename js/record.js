@@ -7,6 +7,8 @@ const stopButton = document.getElementById("record-stop");
 const clearButton = document.getElementById("record-clear");
 const recordTimer = document.getElementById("record-timer");
 const timer = new Timer(recordTimer);
+let playDuration;
+let recordingComplete = false;
 
 // clear out keystroke storage
 clearKeystrokes();
@@ -78,13 +80,22 @@ stopButton.addEventListener("click", () => {
   // stop timer
   timer.stop();
 
-  // stop keydown and input event listener
-  inputEditor.removeEventListener("keydown", recorder);
-  inputEditor.removeEventListener("input", updateInputLength);
-
   // create stop symbol
   const timestamp = new Date().toISOString();
   addKeystroke(keystrokes, "a", timestamp);
+
+  // update recordingComplete flag
+  recordingComplete = true;
+
+  // update playDuration
+  const firstKeyStroke = keystrokes[0];
+  const lastKeyStroke = keystrokes[keystrokes.length - 1];
+
+  const timestamp1 = new Date(firstKeyStroke.timestamp).getTime();
+  const timestamp2 = new Date(lastKeyStroke.timestamp).getTime();
+
+  // Calculate the difference in milliseconds
+  playDuration = timestamp2 - timestamp1;
 });
 
 // clear recording
@@ -101,4 +112,4 @@ clearButton.addEventListener("click", () => {
   timer.clear();
 });
 
-export { keystrokes };
+export { keystrokes, playDuration, recordingComplete };
