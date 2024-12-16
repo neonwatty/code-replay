@@ -1,8 +1,39 @@
 {
-  "devDependencies": {
-    "@playwright/test": "^1.48.0",
-    "@types/node": "^22.7.5",
-    "tailwindcss": "^3.4.14"
+  "name": "code-replay",
+  "displayName": "code-replay",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.96.0"
   },
-  "scripts": {}
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "code-replay.start",
+        "title": "Start Recording Keystrokes"
+      },
+      {
+        "command": "code-replay.stop",
+        "title": "Stop Recording Keystrokes"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "eslint": "^9.16.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
 }

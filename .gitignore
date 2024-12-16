@@ -1,11 +1,4 @@
+node_modules
+.vscode-test/
+*.vsix
 **/.DS_Store
-node_modules/
-logs
-*.log
-.env
-dist/
-build/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
