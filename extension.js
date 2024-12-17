@@ -22,7 +22,7 @@ function activate(context) {
       const fileUri = await vscode.window.showSaveDialog({
         canSelectMany: false,
         openLabel: "Select a file to save keystrokes",
-        filters: { "Text files": ["txt"], "All files": ["*"] },
+        filters: { "Text files": ["json"], "All files": ["*"] },
       });
 
       if (fileUri) {
@@ -64,10 +64,40 @@ function activate(context) {
     const timestamp = new Date().toISOString();
 
     event.contentChanges.forEach((change) => {
-      const keyPressed = change.text || "[BACKSPACE/DELETE]"; // Handle empty changes as backspace/delete
-      const logEntry = `[${timestamp}] Key: "${keyPressed}" | File: "${filePath}"\n`;
+      let keyPressed = change.text || "[BACKSPACE/DELETE]"; // Default for empty changes
+
+      // Create the log entry
+      const logEntry =
+        JSON.stringify({
+          timestamp: new Date().toISOString(), // Use current timestamp
+          key: keyPressed,
+          file: event.document.fileName || "Unknown",
+        }) + "\n";
+
+      // Write to the log file
       writeStream.write(logEntry);
     });
+  });
+
+  // Record cursor movements
+  vscode.window.onDidChangeTextEditorSelection((event) => {
+    if (!writeStream) return; // Do nothing if recording is not active
+
+    const positions = event.selections.map((selection) => ({
+      line: selection.active.line,
+      character: selection.active.character,
+    }));
+
+    // Log cursor movement
+    const logEntry =
+      JSON.stringify({
+        timestamp: new Date().toISOString(),
+        action: "CursorMovement",
+        positions: positions,
+        file: event.textEditor.document.fileName,
+      }) + "\n";
+
+    writeStream.write(logEntry);
   });
 
   // Register commands and events
