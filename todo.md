@@ -1,3 +1,11 @@
-1.  Is there an automated way to create tests here so we can more quickly iterate confidently?
+todos:
 
-2.  Mesh your old way of recording timestamps with this new automation
+- need to record selection + deletion of stuff (maybe not for mvp)
+
+- need to add frontend - port over current main
+
+drafted:
+
+- keystroke recording across multiple files
+- init from an opened file initial dump
+- cursor location recording

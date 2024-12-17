@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const fs = require("fs");
 
+let openedFiles = new Set(); // Track opened files
 let writeStream = null;
 
 /**
@@ -37,20 +38,6 @@ function activate(context) {
     }
   );
 
-  // Command: Stop Recording Keystrokes
-  const stopCommand = vscode.commands.registerCommand(
-    "code-replay.stop",
-    () => {
-      if (writeStream) {
-        writeStream.end();
-        writeStream = null;
-        vscode.window.showInformationMessage("Stopped recording keystrokes.");
-      } else {
-        vscode.window.showWarningMessage("No recording is in progress.");
-      }
-    }
-  );
-
   // Listen for keystrokes in text documents
   const onTextChange = vscode.workspace.onDidChangeTextDocument((event) => {
     if (!writeStream) return; // Do nothing if recording is not active
@@ -79,6 +66,41 @@ function activate(context) {
     });
   });
 
+  // Listen for opening of a new text document
+  vscode.workspace.onDidOpenTextDocument((document) => {
+    console.log(
+      "onDidOpenTextDocument has been activated by document -> ",
+      document
+    );
+    if (!openedFiles.has(document.uri.fsPath)) {
+      // Mark the file as opened
+      openedFiles.add(document.uri.fsPath);
+
+      // Log the initial content of the new file
+      function recordInitialFileContent(filePath) {
+        try {
+          if (!writeStream) return; // Do nothing if recording is not active
+          const initialContent = fs.readFileSync(filePath, "utf-8");
+          const timestamp = new Date().toISOString();
+          const initialEntry =
+            JSON.stringify({
+              timestamp: timestamp,
+              action: "InitialFileContent",
+              file: filePath,
+              content: initialContent,
+            }) + "\n";
+
+          writeStream.write(initialEntry); // Write initial content to log file
+        } catch (err) {
+          vscode.window.showErrorMessage(
+            `Failed to read file: ${filePath}. Error: ${err.message}`
+          );
+        }
+      }
+      recordInitialFileContent(document.uri.fsPath);
+    }
+  });
+
   // Record cursor movements
   vscode.window.onDidChangeTextEditorSelection((event) => {
     if (!writeStream) return; // Do nothing if recording is not active
@@ -103,6 +125,17 @@ function activate(context) {
   // Register commands and events
   context.subscriptions.push(startCommand, stopCommand, onTextChange);
 }
+
+// Command: Stop Recording Keystrokes
+const stopCommand = vscode.commands.registerCommand("code-replay.stop", () => {
+  if (writeStream) {
+    writeStream.end();
+    writeStream = null;
+    vscode.window.showInformationMessage("Stopped recording keystrokes.");
+  } else {
+    vscode.window.showWarningMessage("No recording is in progress.");
+  }
+});
 
 function deactivate() {
   if (writeStream) {
