@@ -124,6 +124,24 @@ function activate(context) {
 
   // Register commands and events
   context.subscriptions.push(startCommand, stopCommand, onTextChange);
+
+  // Register a command that opens the Webview
+  const disposable = vscode.commands.registerCommand(
+    "webviewExample.show",
+    () => {
+      // Create and show a new Webview panel
+      const panel = vscode.window.createWebviewPanel(
+        "exampleWebview", // Internal identifier
+        "Webview Example", // Title of the panel
+        vscode.ViewColumn.One, // Editor column to display
+        {} // Webview options
+      );
+
+      // Set the HTML content for the Webview
+      panel.webview.html = getWebviewContent();
+    }
+  );
+  context.subscriptions.push(disposable);
 }
 
 // Command: Stop Recording Keystrokes
@@ -141,6 +159,24 @@ function deactivate() {
   if (writeStream) {
     writeStream.end();
   }
+}
+
+// Function to provide the HTML content
+function getWebviewContent() {
+  return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Webview Example</title>
+        </head>
+        <body>
+            <h1>Hello from the Webview!</h1>
+            <p>This is a simple Webview in VS Code.</p>
+        </body>
+        </html>
+    `;
 }
 
 module.exports = {

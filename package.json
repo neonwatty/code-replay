@@ -20,6 +20,10 @@
       {
         "command": "code-replay.stop",
         "title": "Stop Recording Keystrokes"
+      },
+      {
+        "command": "webviewExample.show",
+        "title": "Show Webview Example"
       }
     ]
   },

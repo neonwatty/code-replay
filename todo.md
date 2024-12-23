@@ -1,7 +1,6 @@
 todos:
 
 - need to record selection + deletion of stuff (maybe not for mvp)
-
 - need to add frontend - port over current main
 
 drafted:
